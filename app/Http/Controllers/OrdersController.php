@@ -123,47 +123,7 @@ class OrdersController extends Controller
 
         return Datatables::of($orders)
             ->addColumn('month', function ($orders) {
-                switch($orders->month) {
-                    case 1:
-                        $month = '1';
-                        break;
-                    case 2:
-                        $month = '2';
-                        break;
-                    case 3:
-                        $month = '3';
-                        break;
-                    case 4:
-                        $month = '4';
-                        break;
-                    case 5:
-                        $month = '5';
-                        break;
-                    case 6:
-                        $month = '6';
-                        break;
-                    case 7:
-                        $month = '7';
-                        break;
-                    case 8:
-                        $month = '8';
-                        break;
-                    case 9:
-                        $month = '9';
-                        break;
-                    case 10:
-                        $month = '10';
-                        break;
-                    case 11:
-                        $month = '11';
-                        break;
-                    case 12:
-                        $month = '12';
-                        break;
-                    default:
-                        break;
-                }
-                return $month;
+                return $orders->month;
             })
             ->editColumn('period', function ($orders) {
                 return $orders->period->name;
