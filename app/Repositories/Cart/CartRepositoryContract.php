@@ -10,5 +10,5 @@ interface CartRepositoryContract
 
     public function update($id, $requestData);
 
-    public function destroy($request, $id);
+    public function destroy($id);
 }

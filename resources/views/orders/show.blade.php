@@ -42,8 +42,6 @@
                         <p><b>Đại lý: </b> {{$order->client->code}} - {{$order->client->name}}</p>
                     </div>
 
-                    <button type="button" class="btn btn-success btn-md pull-right" data-toggle="modal" data-target="#add_to_cart"><i class="fa fa-plus-circle"><b> Thêm sản phẩm</b></i></button>
-
                     <div class="modal fade" id="add_to_cart" role="dialog" aria-labelledby="AddToCartModalLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -73,9 +71,7 @@
                         </div>
                     </div>
                     <!-- ~ List all carts-->
-                    @if($carts->count())
-                        @include('orders.carts.index', ['subject' => $order])
-                    @endif
+                    @include('orders.carts.index', ['subject' => $order])
 
                 </div>
             </div>

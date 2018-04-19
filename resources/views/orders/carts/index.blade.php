@@ -8,7 +8,10 @@
             <th><b>Khối lượng</b></th>
             <th><b>Thời gian lấy hàng (dự kiến)</b></th>
             <th><b>Thành tiền (VNĐ)</b></th>
-            <th><b>Sửa</b></th>
+            @if(\Auth::id() == $order->user_id)
+            <th style="text-align: center"><b><button type="button" class="btn btn-success btn-md" data-toggle="modal" data-target="#add_to_cart"><i class="fa fa-plus-circle"><b></b></i></button></b></th>
+            
+            @endif
             </thead>
             @foreach($carts as $cart)
                 <tr>
@@ -17,20 +20,21 @@
                     <td>{{ number_format($cart->weight, 0) }} kg</td>
                     <td>{{date('d, F Y', strTotime($cart->delivery_date))}}</td>
                     <td>{{ number_format($cart->total_price, 0) }} VNĐ</td>
-                    <td style="text-align: center">
-                        @if(\Auth::id() == $cart->user_id)
-                            <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#CartEditModal-{{$cart->id}}"
-                                    data-id="{{ $cart->id }}"><i class="fa fa-edit"></i>
-                            </button>
-                        @else
-                            <button type="button" class="btn btn-warning btn-sm"><i class="fa fa-lock"></i></button>
-                        @endif
-                        <div class="modal fade" id="CartEditModal-{{$cart->id}}" role="dialog" aria-labelledby="CartModalLabel">
+                    @if(\Auth::id() == $cart->user_id)
+                    <td style="text-align: center;">
+                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#CartEditModal-{{$cart->id}}"
+                                data-id="{{ $cart->id }}"><i class="fa fa-edit"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#CartDeleteModal-{{$cart->id}}"
+                                data-id="{{ $cart->id }}"><i class="fa fa-trash"></i>
+                        </button>
+                        <div class="modal fade" id="CartEditModal-{{$cart->id}}" role="dialog" aria-labelledby="CartEditModalLabel">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        <h4 class="modal-title" id="CartModalLabel">Sửa đơn đặt hàng</h4>
+                                        <h4 class="modal-title" id="CartEditModalLabel">Sửa đơn đặt hàng</h4>
                                     </div>
                                     <div class="modal-body" style="text-align: left">
                                         {!! Form::model($cart, [
@@ -58,7 +62,34 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="modal fade" id="CartDeleteModal-{{$cart->id}}" role="dialog" aria-labelledby="CartDeleteModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="CartDeleteModalLabel">Bạn thật sự muốn xóa đơn đặt hàng ???</h4>
+                                    </div>
+                                    <div class="modal-body" style="text-align: left">
+                                        {!! Form::model($cart, [
+                                            'method' => 'DELETE',
+                                            'route' => ['carts.destroy', $cart->id],
+                                            'files'=>true,
+                                            'enctype' => 'multipart/form-data'
+                                            ]) !!}
+
+                                        {!! Form::submit('Xóa', ['class' => 'btn btn-danger', 'style' => 'width:100%']) !!}
+
+                                        {!! Form::close() !!}
+                                    </div>
+                                    <div class="modal-footer">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </td>
+
+                    @endif
                 </tr>
             @endforeach
         </table>

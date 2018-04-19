@@ -60,9 +60,9 @@ class CartRepository implements CartRepositoryContract
      * @param $id
      * @return mixed
      */
-    public function destroy($request, $id)
+    public function destroy($id)
     {
-
+        Cart::findorFail($id)->delete();
     }
 
     /**

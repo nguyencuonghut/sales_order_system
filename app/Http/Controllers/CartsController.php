@@ -93,6 +93,7 @@ class CartsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $this->carts->destroy($id);
+        return redirect()->back();
     }
 }
