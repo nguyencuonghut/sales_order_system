@@ -150,12 +150,12 @@ class OrdersController extends Controller
     public function productData()
     {
         $carts = Cart::with(['product','client', 'period', 'user'])->select(
-            ['carts.id', 'carts.month', 'carts.period_id', 'carts.client_id','carts.order_id', 'carts.user_id', 'carts.product_id', 'carts.weight', 'carts.total_price']
-        )->orderBy('carts.id', 'desc');
+            ['carts.id', 'carts.month', 'carts.year', 'carts.period_id', 'carts.client_id','carts.order_id', 'carts.user_id', 'carts.product_id', 'carts.weight', 'carts.total_price']
+        )->orderBy('carts.created_at', 'desc');
 
         return Datatables::of($carts)
             ->addColumn('month', function ($carts) {
-                return $carts->month;
+                return $carts->year . '/' . $carts->month;
             })
             ->editColumn('period', function ($carts) {
                 return $carts->period->name;
@@ -175,47 +175,6 @@ class OrdersController extends Controller
             ->editColumn('total_price', function ($carts) {
                 return number_format($carts->total_price, 0);
             })
-            ->addIndexColumn()
             ->make(true);
-        /*
-        $carts = DB::table('carts')
-            ->join('periods', 'carts.period_id', '=', 'periods.id')
-            ->join('clients', 'carts.client_id', '=', 'clients.id')
-            ->join('products', 'carts.product_id', '=', 'products.id')
-            ->join('users', 'carts.user_id', '=', 'users.id')
-            ->select([
-               'carts.id',
-               'carts.month',
-               'carts.weight',
-               'carts.total_price',
-               'periods.name',
-               'clients.name',
-               'clients.code',
-               'products.code',
-                'users.name',
-            ]);
-        return Datatables::of($carts)
-            ->addColumn('month', function ($carts) {
-                return $carts->month;
-            })
-            ->editColumn('period', function ($carts) {
-                return $carts->period->name;
-            })
-            ->editColumn('client', function ($carts) {
-                return $carts->client->code . ' - ' . $carts->client->name;
-            })
-            ->editColumn('user', function ($carts) {
-                return $carts->user->name;
-            })
-            ->editColumn('product', function ($carts) {
-                return $carts->product->code;
-            })
-            ->editColumn('weight', function ($carts) {
-                return number_format($carts->weight, 0);
-            })
-            ->editColumn('total_price', function ($carts) {
-                return number_format($carts->total_price, 0);
-            })->make(true);
-        */
     }
 }

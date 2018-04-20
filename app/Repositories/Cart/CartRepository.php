@@ -37,6 +37,7 @@ class CartRepository implements CartRepositoryContract
         $input = $requestData = array_merge(
             $requestData->all(),
             ['month' => $order->month,
+                'year' => date("Y"),
                 'client_id' => $order->client_id,
                 'period_id' => $order->period_id,
                 'order_id' => $order_id,
@@ -45,7 +46,7 @@ class CartRepository implements CartRepositoryContract
                 'total_price' => $product->price * $requestData->weight]
         );
 
-        $cart = Cart::create($input);
+        Cart::create($input);
 
         Session::flash('flash_message', 'Đặt hàng thêm sản phẩm thành công!');
     }

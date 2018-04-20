@@ -1,5 +1,9 @@
 @extends('layouts.master')
-
+<style>
+    .content-loader tr td {
+        white-space: nowrap;
+    }
+</style>
 @section('heading')
 
 @stop
@@ -20,10 +24,9 @@
                 <div class="panel-body">
 
                     <!-- Tab for each ticket -->
-                    <table class="table table-hover" id="products-table">
+                    <table class="table table-hover content-loader" id="products-table">
                         <thead  style="background-color: purple; color: white">
                         <tr>
-                            <th>{{ __('STT') }}</th>
                             <th>{{ __('Tháng') }}</th>
                             <th>{{ __('Kỳ') }}</th>
                             <th>{{ __('Khách hàng') }}</th>
@@ -36,7 +39,6 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -102,6 +104,7 @@
                 autoWidth: false,
                 processing: true,
                 serverSide: false,
+                order: [[ 0, "desc" ]],
                 ajax: {
                     url: '{!! route('orders.productdata') !!}',
                     data: function (d) {
@@ -109,8 +112,7 @@
                     }
                 },
                 columns: [
-                    {data: 'DT_Row_Index', name: 'DT_Row_Index'},
-                    {data: 'month', name: 'month'},
+                    {data: 'month', name: 'year' + 'month'},
                     {data: 'period', name: 'period.name'},
                     {data: 'client', name: 'client.name' + 'client.name'},
                     {data: 'user', name: 'user.name'},
@@ -144,7 +146,7 @@
 
                     // Total over all pages
                     total = api
-                        .column( 7 )
+                        .column( 6 )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
@@ -152,7 +154,7 @@
 
                     // Total over this page
                     pageTotal = api
-                        .column( 7, { page: 'current'} )
+                        .column( 6, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
@@ -161,7 +163,7 @@
                     //summary for total weigth
                     // Total over all pages
                     totalWeigth = api
-                        .column( 6 )
+                        .column( 5 )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
@@ -169,7 +171,7 @@
 
                     // Total over this page
                     pageTotalWeight = api
-                        .column( 6, { page: 'current'} )
+                        .column( 5, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
@@ -178,20 +180,12 @@
 
                     // Update footer
                     var nf = new Intl.NumberFormat();
-                    $( api.column( 6 ).footer() ).html(
+                    $( api.column( 5 ).footer() ).html(
                         nf.format(pageTotalWeight) +'/'+ nf.format(totalWeigth)
                     );
-                    $( api.column( 7 ).footer() ).html(
+                    $( api.column( 6 ).footer() ).html(
                         nf.format(pageTotal) +'/'+ nf.format(total)
                     );
-                },
-                createdRow: function ( row, data, index ) {
-                    //window.alert(index);
-                    if ( (index)%2 == 1)  {
-                        $('td', row).addClass('danger');
-                    } else {
-                        $('td', row).addClass('primary');
-                    }
                 },
             });
         });
