@@ -22,6 +22,8 @@ class CreateOrdersTable extends Migration
             $table->foreign('period_id')->references('id')->on('periods');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('region_id')->unsigned();
+            $table->foreign('region_id')->references('id')->on('regions');
             $table->timestamps();
         });
     }

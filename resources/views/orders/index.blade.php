@@ -24,11 +24,12 @@
                 <div class="panel-body">
 
                     <!-- Tab for each ticket -->
-                    <table class="table table-hover content-loader" id="products-table">
+                    <table class="table table-hover" id="products-table">
                         <thead  style="background-color: purple; color: white">
                         <tr>
                             <th>{{ __('Tháng') }}</th>
                             <th>{{ __('Kỳ') }}</th>
+                            <th>{{ __('Vùng') }}</th>
                             <th>{{ __('Khách hàng') }}</th>
                             <th>{{ __('Nhân viên KD') }}</th>
                             <th>{{ __('Sản phẩm') }}</th>
@@ -39,6 +40,7 @@
                         </thead>
                         <tfoot>
                             <tr>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>
@@ -114,6 +116,7 @@
                 columns: [
                     {data: 'month', name: 'year' + 'month'},
                     {data: 'period', name: 'period.name'},
+                    {data: 'region', name: 'region.name'},
                     {data: 'client', name: 'client.name' + 'client.name'},
                     {data: 'user', name: 'user.code' + 'user.name'},
                     {data: 'product', name: 'product.code'},
@@ -146,7 +149,7 @@
 
                     // Total over all pages
                     total = api
-                        .column( 6 )
+                        .column( 7 )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
@@ -154,7 +157,7 @@
 
                     // Total over this page
                     pageTotal = api
-                        .column( 6, { page: 'current'} )
+                        .column( 7, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
@@ -163,7 +166,7 @@
                     //summary for total weigth
                     // Total over all pages
                     totalWeigth = api
-                        .column( 5 )
+                        .column( 6 )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
@@ -171,7 +174,7 @@
 
                     // Total over this page
                     pageTotalWeight = api
-                        .column( 5, { page: 'current'} )
+                        .column( 6, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
@@ -180,10 +183,10 @@
 
                     // Update footer
                     var nf = new Intl.NumberFormat();
-                    $( api.column( 5 ).footer() ).html(
+                    $( api.column( 6 ).footer() ).html(
                         nf.format(pageTotalWeight) +'/'+ nf.format(totalWeigth)
                     );
-                    $( api.column( 6 ).footer() ).html(
+                    $( api.column( 7 ).footer() ).html(
                         nf.format(pageTotal) +'/'+ nf.format(total)
                     );
                 },

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $fillable = ['month', 'period_id', 'client_id', 'user_id'];
+    protected $fillable = ['month', 'period_id', 'client_id', 'user_id', 'region_id'];
 
     public function period()
     {
@@ -21,6 +21,11 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(Region::class, 'region_id');
     }
 
     public function comments()

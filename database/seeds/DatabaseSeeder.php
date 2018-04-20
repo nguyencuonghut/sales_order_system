@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call('ClientsDummyTableSeeder');
         $this->call('PeriodsTableSeeder');
         $this->call('ProductsTableSeeder');
+        $this->call('RegionsTableSeeder');
     }
 }

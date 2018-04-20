@@ -7,6 +7,7 @@ use App\Models\Client;
 use App\Models\Order;
 use App\Models\Period;
 use App\Models\Product;
+use App\Models\Region;
 use Illuminate\Http\Request;
 use App\Repositories\Order\OrderRepositoryContract;
 use App\Repositories\Cart\CartRepositoryContract;
@@ -47,7 +48,8 @@ class OrdersController extends Controller
     {
         return view('orders.create')
             ->withPeriods(Period::all()->pluck('name', 'id'))
-            ->withClients(Client::all()->pluck('codeAndName', 'id'));
+            ->withClients(Client::all()->pluck('codeAndName', 'id'))
+            ->withRegions(Region::all()->pluck('name', 'id'));
     }
 
     /**
@@ -149,8 +151,8 @@ class OrdersController extends Controller
      */
     public function productData()
     {
-        $carts = Cart::with(['product','client', 'period', 'user'])->select(
-            ['carts.id', 'carts.month', 'carts.year', 'carts.period_id', 'carts.client_id','carts.order_id', 'carts.user_id', 'carts.product_id', 'carts.weight', 'carts.total_price']
+        $carts = Cart::with(['product','client', 'period', 'user', 'region'])->select(
+            ['carts.id', 'carts.month', 'carts.year', 'carts.period_id', 'carts.client_id','carts.order_id', 'carts.user_id', 'carts.region_id', 'carts.product_id', 'carts.weight', 'carts.total_price']
         )->orderBy('carts.created_at', 'desc');
 
         return Datatables::of($carts)
@@ -159,6 +161,9 @@ class OrdersController extends Controller
             })
             ->editColumn('period', function ($carts) {
                 return $carts->period->name;
+            })
+            ->editColumn('region', function ($carts) {
+                return $carts->region->name;
             })
             ->editColumn('client', function ($carts) {
                 return $carts->client->code . ' - ' . $carts->client->name;

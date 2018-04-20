@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
-    protected $fillable = ['month', 'year', 'client_id', 'period_id', 'order_id', 'user_id', 'product_id', 'weight', 'delivery_date', 'total_price'];
+    protected $fillable = ['month', 'year', 'client_id', 'period_id', 'order_id', 'user_id', 'region_id','product_id', 'weight', 'delivery_date', 'total_price'];
 
     public function period()
     {
@@ -21,7 +21,10 @@ class Cart extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-
+    public function region()
+    {
+        return $this->belongsTo(Region::class, 'region_id');
+    }
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');

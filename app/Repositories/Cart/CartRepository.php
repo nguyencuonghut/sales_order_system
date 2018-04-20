@@ -43,6 +43,7 @@ class CartRepository implements CartRepositoryContract
                 'order_id' => $order_id,
                 'product_id' => $requestData->product_id,
                 'user_id' => \auth::id(),
+                'region_id' => $order->region_id,
                 'total_price' => $product->price * $requestData->weight]
         );
 
