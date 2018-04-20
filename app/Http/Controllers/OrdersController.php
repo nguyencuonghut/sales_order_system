@@ -164,7 +164,7 @@ class OrdersController extends Controller
                 return $carts->client->code . ' - ' . $carts->client->name;
             })
             ->addColumn('user', function ($carts) {
-                return $carts->user->name;
+                return $carts->user->code . ' - ' . $carts->user->name;
             })
             ->editColumn('product', function ($carts) {
                 return $carts->product->code;

@@ -115,7 +115,7 @@
                     {data: 'month', name: 'year' + 'month'},
                     {data: 'period', name: 'period.name'},
                     {data: 'client', name: 'client.name' + 'client.name'},
-                    {data: 'user', name: 'user.name'},
+                    {data: 'user', name: 'user.code' + 'user.name'},
                     {data: 'product', name: 'product.code'},
                     {data: 'weight', name: 'weight', searchable:true},
                     {data: 'total_price', name: 'total_price', searchable:true},
