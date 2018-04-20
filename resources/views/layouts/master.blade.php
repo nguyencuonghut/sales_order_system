@@ -121,6 +121,12 @@
             <a href="{{ route('clients.create')}}"
                        class="list-group-item childlist">{{ __('Tạo mới') }}</a>
                 @endif
+
+                @if(Entrust::hasRole('administrator'))
+                    <a href="{{ route('clients.import')}}"
+                       class="list-group-item childlist">{{ __('Import danh sách') }}
+                    </a>
+                @endif
                 </div>
 
             <a href="#user" class=" list-group-item" data-toggle="collapse" data-parent="#MainMenu"><i

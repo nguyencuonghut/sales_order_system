@@ -59,6 +59,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/create/cvrapi', 'ClientsController@cvrapiStart');
         Route::post('/upload/{id}', 'DocumentsController@upload');
         Route::patch('/updateassign/{id}', 'ClientsController@updateAssign');
+        Route::get('/import', 'ClientsController@import')->name('clients.import');
+        Route::post('/doImport', 'ClientsController@doImport')->name('clients.doimport');
     });
         Route::resource('clients', 'ClientsController');
 	    Route::resource('documents', 'DocumentsController');

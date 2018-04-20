@@ -12,6 +12,7 @@ use App\Http\Requests\Client\UpdateClientRequest;
 use App\Repositories\User\UserRepositoryContract;
 use App\Repositories\Client\ClientRepositoryContract;
 use App\Repositories\Setting\SettingRepositoryContract;
+use Excel;
 
 class ClientsController extends Controller
 {
@@ -158,6 +159,47 @@ class ClientsController extends Controller
         $this->clients->updateAssign($id, $request);
         Session()->flash('flash_message', 'New user is assigned');
         return redirect()->back();
+    }
+
+    /**
+     * Show import page to import clients list from excel to database
+     */
+    public function import(Request $request)
+    {
+        return view('clients.import');
+
+    }
+    /**
+     * Import clients list from excel to database
+     */
+    public function doImport(Request $request)
+    {
+        Client::truncate();
+        if($request->hasFile('import_file')){
+            $extension = $request->file('import_file')->getClientOriginalExtension();
+            if (!is_dir(public_path(). '/upload/')) {
+                mkdir(public_path(). '/upload/', 0777, true);
+            }
+            $destinationPath = 'upload';
+            $fileName = 'Danh sach khach hang' . date('m Y').'.'.$extension; // rename the file
+            $request->file('import_file')->move($destinationPath, $fileName);
+            $data = Excel::load('public/upload/'.$fileName, function($reader) {})->get();
+            if(!empty($data) && $data->count()){
+                foreach ($data->toArray() as $key => $value) {
+                    $insert[] = ['code' => $value['code'],
+                        'name' => $value['name'],
+                        'address' => $value['address'],
+                    ];
+                }
+                if(!empty($insert)){
+                    Client::insert($insert);
+                    return back()->with('success','Đã import danh sách đại lý thành công.');
+                }
+            }
+        } else {
+            return back()->with('error','Không có file để import !!!');
+        }
+        return back()->with('error','Vui lòng kiểm tra file của bạn. Có lỗi xảy ra.');
     }
 
 }
