@@ -179,15 +179,15 @@
                     // Update footer
                     var nf = new Intl.NumberFormat();
                     $( api.column( 6 ).footer() ).html(
-                        nf.format(pageTotalWeight) +' /'+ nf.format(totalWeigth)
+                        nf.format(pageTotalWeight) +'/'+ nf.format(totalWeigth)
                     );
                     $( api.column( 7 ).footer() ).html(
-                        nf.format(pageTotal) +' /'+ nf.format(total)
+                        nf.format(pageTotal) +'/'+ nf.format(total)
                     );
                 },
                 createdRow: function ( row, data, index ) {
                     //window.alert(index);
-                    if ( (index)%2 == 0)  {
+                    if ( (index)%2 == 1)  {
                         $('td', row).addClass('danger');
                     } else {
                         $('td', row).addClass('primary');
