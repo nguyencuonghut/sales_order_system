@@ -115,8 +115,8 @@
                     {data: 'client', name: 'client.name'},
                     {data: 'user', name: 'user.name'},
                     {data: 'product', name: 'product.code'},
-                    {data: 'weight', name: 'weight', searchable:false},
-                    {data: 'total_price', name: 'total_price', searchable:false},
+                    {data: 'weight', name: 'weight', searchable:true},
+                    {data: 'total_price', name: 'total_price', searchable:true},
                 ],
                 initComplete: function () {
                     this.api().columns().every(function () {
