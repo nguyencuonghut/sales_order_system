@@ -151,7 +151,7 @@ class OrdersController extends Controller
     {
         $carts = Cart::with(['product','client', 'period', 'user'])->select(
             ['carts.id', 'carts.month', 'carts.period_id', 'carts.client_id','carts.order_id', 'carts.user_id', 'carts.product_id', 'carts.weight', 'carts.total_price']
-        )->orderBy('id', 'desc');
+        )->orderBy('carts.id', 'desc');
 
         return Datatables::of($carts)
             ->addColumn('month', function ($carts) {
@@ -174,7 +174,9 @@ class OrdersController extends Controller
             })
             ->editColumn('total_price', function ($carts) {
                 return number_format($carts->total_price, 0);
-            })->make(true);
+            })
+            ->addIndexColumn()
+            ->make(true);
         /*
         $carts = DB::table('carts')
             ->join('periods', 'carts.period_id', '=', 'periods.id')

@@ -1,18 +1,4 @@
 @extends('layouts.master')
-<style>
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-        font-size: 12px;
-    }
-    th, td {
-        padding: 2px;
-        padding-top: 2px;
-        padding-bottom: 2px;
-        text-align: left;
-        font-weight: normal;
-    }
-</style>
 
 @section('heading')
 
@@ -37,6 +23,7 @@
                     <table class="table table-hover" id="products-table">
                         <thead  style="background-color: purple; color: white">
                         <tr>
+                            <th>{{ __('STT') }}</th>
                             <th>{{ __('Tháng') }}</th>
                             <th>{{ __('Kỳ') }}</th>
                             <th>{{ __('Khách hàng') }}</th>
@@ -47,6 +34,18 @@
 
                         </tr>
                         </thead>
+                        <tfoot>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -102,7 +101,7 @@
             $('#products-table').DataTable({
                 autoWidth: false,
                 processing: true,
-                serverSide: true,
+                serverSide: false,
                 ajax: {
                     url: '{!! route('orders.productdata') !!}',
                     data: function (d) {
@@ -110,9 +109,10 @@
                     }
                 },
                 columns: [
+                    {data: 'DT_Row_Index', name: 'DT_Row_Index'},
                     {data: 'month', name: 'month'},
                     {data: 'period', name: 'period.name'},
-                    {data: 'client', name: 'client.name'},
+                    {data: 'client', name: 'client.name' + 'client.name'},
                     {data: 'user', name: 'user.name'},
                     {data: 'product', name: 'product.code'},
                     {data: 'weight', name: 'weight', searchable:true},
@@ -130,7 +130,69 @@
                                 column.search($(this).val(), false, false, true).draw();
                             });
                     });
-                }
+                },
+                fnFooterCallback: function () {
+                    var api = this.api(), data;
+
+                    // Remove the formatting to get integer data for summation
+                    var intVal = function ( i ) {
+                        return typeof i === 'string' ?
+                            i.replace(/[\$,]/g, '')*1 :
+                            typeof i === 'number' ?
+                                i : 0;
+                    };
+
+                    // Total over all pages
+                    total = api
+                        .column( 7 )
+                        .data()
+                        .reduce( function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0 );
+
+                    // Total over this page
+                    pageTotal = api
+                        .column( 7, { page: 'current'} )
+                        .data()
+                        .reduce( function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0 );
+
+                    //summary for total weigth
+                    // Total over all pages
+                    totalWeigth = api
+                        .column( 6 )
+                        .data()
+                        .reduce( function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0 );
+
+                    // Total over this page
+                    pageTotalWeight = api
+                        .column( 6, { page: 'current'} )
+                        .data()
+                        .reduce( function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0 );
+                    //~summary for total weigth
+
+                    // Update footer
+                    var nf = new Intl.NumberFormat();
+                    $( api.column( 6 ).footer() ).html(
+                        nf.format(pageTotalWeight) +' /'+ nf.format(totalWeigth)
+                    );
+                    $( api.column( 7 ).footer() ).html(
+                        nf.format(pageTotal) +' /'+ nf.format(total)
+                    );
+                },
+                createdRow: function ( row, data, index ) {
+                    //window.alert(index);
+                    if ( (index)%2 == 0)  {
+                        $('td', row).addClass('danger');
+                    } else {
+                        $('td', row).addClass('primary');
+                    }
+                },
             });
         });
     </script>
