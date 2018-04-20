@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Repositories\Order\OrderRepositoryContract;
 use App\Repositories\Cart\CartRepositoryContract;
 use Datatables;
+use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
 {
@@ -148,12 +149,21 @@ class OrdersController extends Controller
      */
     public function productData()
     {
-        $carts = Cart::with('product')->select(
-            ['id', 'order_id', 'user_id', 'product_id', 'weight', 'total_price']
+        $carts = Cart::with(['product','client', 'period', 'user'])->select(
+            ['carts.id', 'carts.month', 'carts.period_id', 'carts.client_id','carts.order_id', 'carts.user_id', 'carts.product_id', 'carts.weight', 'carts.total_price']
         )->orderBy('id', 'desc');
 
         return Datatables::of($carts)
-            ->addColumn('user_id', function ($carts) {
+            ->addColumn('month', function ($carts) {
+                return $carts->month;
+            })
+            ->editColumn('period', function ($carts) {
+                return $carts->period->name;
+            })
+            ->editColumn('client', function ($carts) {
+                return $carts->client->code . ' - ' . $carts->client->name;
+            })
+            ->addColumn('user', function ($carts) {
                 return $carts->user->name;
             })
             ->editColumn('product', function ($carts) {
@@ -165,5 +175,45 @@ class OrdersController extends Controller
             ->editColumn('total_price', function ($carts) {
                 return number_format($carts->total_price, 0);
             })->make(true);
+        /*
+        $carts = DB::table('carts')
+            ->join('periods', 'carts.period_id', '=', 'periods.id')
+            ->join('clients', 'carts.client_id', '=', 'clients.id')
+            ->join('products', 'carts.product_id', '=', 'products.id')
+            ->join('users', 'carts.user_id', '=', 'users.id')
+            ->select([
+               'carts.id',
+               'carts.month',
+               'carts.weight',
+               'carts.total_price',
+               'periods.name',
+               'clients.name',
+               'clients.code',
+               'products.code',
+                'users.name',
+            ]);
+        return Datatables::of($carts)
+            ->addColumn('month', function ($carts) {
+                return $carts->month;
+            })
+            ->editColumn('period', function ($carts) {
+                return $carts->period->name;
+            })
+            ->editColumn('client', function ($carts) {
+                return $carts->client->code . ' - ' . $carts->client->name;
+            })
+            ->editColumn('user', function ($carts) {
+                return $carts->user->name;
+            })
+            ->editColumn('product', function ($carts) {
+                return $carts->product->code;
+            })
+            ->editColumn('weight', function ($carts) {
+                return number_format($carts->weight, 0);
+            })
+            ->editColumn('total_price', function ($carts) {
+                return number_format($carts->total_price, 0);
+            })->make(true);
+        */
     }
 }

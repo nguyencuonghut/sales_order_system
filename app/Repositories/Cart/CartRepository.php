@@ -32,10 +32,14 @@ class CartRepository implements CartRepositoryContract
      */
     public function create($order_id, $requestData)
     {
+        $order = Order::findOrFail($order_id);
         $product= Product::findOrFail($requestData->product_id);
         $input = $requestData = array_merge(
             $requestData->all(),
-            ['order_id' => $order_id,
+            ['month' => $order->month,
+                'client_id' => $order->client_id,
+                'period_id' => $order->period_id,
+                'order_id' => $order_id,
                 'product_id' => $requestData->product_id,
                 'user_id' => \auth::id(),
                 'total_price' => $product->price * $requestData->weight]

@@ -10,7 +10,7 @@
             <th><b>Thành tiền (VNĐ)</b></th>
             @if(\Auth::id() == $order->user_id)
             <th style="text-align: center"><b><button type="button" class="btn btn-success btn-md" data-toggle="modal" data-target="#add_to_cart"><i class="fa fa-plus-circle"><b></b></i></button></b></th>
-            
+
             @endif
             </thead>
             @foreach($carts as $cart)
