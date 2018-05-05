@@ -18,6 +18,7 @@ use App\Repositories\Department\DepartmentRepositoryContract;
 use App\Repositories\Setting\SettingRepositoryContract;
 use App\Repositories\Task\TaskRepositoryContract;
 use App\Repositories\Lead\LeadRepositoryContract;
+use Excel;
 
 class UsersController extends Controller
 {
@@ -226,5 +227,48 @@ class UsersController extends Controller
         $this->users->destroy($request, $id);
 
         return redirect()->route('users.index');
+    }
+
+    /**
+     * Show import page to import clients list from excel to database
+     */
+    public function import(Request $request)
+    {
+        return view('users.import');
+
+    }
+    /**
+     * Import clients list from excel to database
+     */
+    public function doImport(Request $request)
+    {
+        ini_set('memory_limit', '512M');
+        ini_set('max_execution_time', '1200');
+        if($request->hasFile('import_file')){
+            $extension = $request->file('import_file')->getClientOriginalExtension();
+            if (!is_dir(public_path(). '/upload/')) {
+                mkdir(public_path(). '/upload/', 0777, true);
+            }
+            $destinationPath = 'upload';
+            $fileName = 'Danh sach nhan vien ' . date('m Y').'.'.$extension; // rename the file
+            $request->file('import_file')->move($destinationPath, $fileName);
+            $data = Excel::load('public/upload/'.$fileName, function($reader) {})->get();
+            if(!empty($data) && $data->count()){
+                foreach ($data->toArray() as $key => $value) {
+                    $insert[] = ['code' => $value['code'],
+                        'name' => $value['name'],
+                        'email' => $value['email'],
+                        'password' => bcrypt($value['password']),
+                    ];
+                }
+                if(!empty($insert)){
+                    User::insert($insert);
+                    return back()->with('success','Đã import danh sách nhân viên thành công.');
+                }
+            }
+        } else {
+            return back()->with('error','Không có file để import !!!');
+        }
+        return back()->with('error','Vui lòng kiểm tra file của bạn. Có lỗi xảy ra.');
     }
 }
